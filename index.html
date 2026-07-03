@@ -3,545 +3,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>科科紫微任務包產生器 v0.1.1</title>
-  <meta name="description" content="文墨天機文字包整理器，不排盤、不解盤，只產生小科任務包。">
-  <style>
-    :root {
-      --bg: #eef7ff;
-      --bg-soft: #f7fbff;
-      --card: #ffffff;
-      --card-soft: #fafdff;
-      --ink: #17243b;
-      --muted: #62718a;
-      --line: #d9e8fb;
-      --line-strong: #bfd6f7;
-      --blue: #3c7df2;
-      --blue-soft: #eaf3ff;
-      --blue-deep: #245bbd;
-      --green: #18a978;
-      --green-soft: #e8f8f1;
-      --orange: #f2a33a;
-      --orange-soft: #fff3df;
-      --red: #d86a61;
-      --red-soft: #fdeceb;
-      --purple: #8b77ee;
-      --purple-soft: #f0edff;
-      --shadow: 0 18px 45px rgba(64, 118, 190, .14);
-      --shadow-soft: 0 8px 26px rgba(64, 118, 190, .1);
-      --radius: 18px;
-      --radius-sm: 12px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      color: var(--ink);
-      background:
-        radial-gradient(circle at 12% -10%, rgba(139, 119, 238, .18), transparent 32%),
-        radial-gradient(circle at 92% 0%, rgba(83, 169, 255, .2), transparent 30%),
-        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 48%, #f7fbff 100%);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
-    button,
-    textarea,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    .wrap {
-      width: min(1160px, calc(100% - 24px));
-      margin: 0 auto;
-    }
-
-    .hero {
-      padding: 24px 0 18px;
-    }
-
-    .hero-card {
-      display: grid;
-      gap: 16px;
-      padding: 18px;
-      border: 1px solid rgba(191, 214, 247, .86);
-      border-radius: 24px;
-      background: rgba(255, 255, 255, .78);
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(14px);
-    }
-
-    .brand {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 13px;
-      align-items: center;
-    }
-
-    .mark {
-      width: 46px;
-      height: 46px;
-      display: grid;
-      place-items: center;
-      border-radius: 16px;
-      color: #fff;
-      background: linear-gradient(135deg, var(--blue), var(--purple));
-      box-shadow: 0 12px 24px rgba(60, 125, 242, .28);
-      font-weight: 950;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(25px, 6.2vw, 44px);
-      line-height: 1.12;
-      letter-spacing: 0;
-    }
-
-    .version {
-      color: var(--blue);
-      font-size: .48em;
-      font-weight: 950;
-      white-space: nowrap;
-    }
-
-    .subtitle {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 15px;
-      font-weight: 750;
-    }
-
-    .scope {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .tag {
-      min-height: 36px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--card);
-      color: var(--blue-deep);
-      font-size: 13px;
-      font-weight: 900;
-      box-shadow: 0 7px 18px rgba(60, 125, 242, .08);
-      white-space: nowrap;
-    }
-
-    main {
-      padding: 2px 0 44px;
-    }
-
-    .layout {
-      display: grid;
-      gap: 14px;
-    }
-
-    .panel {
-      border: 1px solid rgba(191, 214, 247, .9);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, .92);
-      box-shadow: var(--shadow);
-      padding: 16px;
-    }
-
-    .panel.compact {
-      box-shadow: var(--shadow-soft);
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin: 0 0 12px;
-    }
-
-    .section-title h2 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.3;
-      letter-spacing: 0;
-    }
-
-    .step {
-      color: var(--blue);
-      background: var(--blue-soft);
-      border: 1px solid #d5e8ff;
-      border-radius: 999px;
-      padding: 4px 8px;
-      font-size: 12px;
-      font-weight: 950;
-      white-space: nowrap;
-    }
-
-    .field-label {
-      display: block;
-      margin: 13px 0 7px;
-      color: #203354;
-      font-weight: 900;
-    }
-
-    .field-help,
-    .hint {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 720;
-      margin: 8px 0 0;
-    }
-
-    textarea,
-    input[type="text"],
-    select {
-      width: 100%;
-      border: 1px solid #c8ddf7;
-      border-radius: var(--radius-sm);
-      background: var(--card-soft);
-      color: var(--ink);
-      padding: 12px 13px;
-      outline: none;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
-    }
-
-    textarea:focus,
-    input[type="text"]:focus,
-    select:focus {
-      border-color: #7fb2ff;
-      box-shadow: 0 0 0 4px rgba(60, 125, 242, .13);
-      background: #fff;
-    }
-
-    #sourceText {
-      min-height: 260px;
-      resize: vertical;
-      font-family: "Microsoft JhengHei", "Noto Sans TC", ui-monospace, monospace;
-      font-size: 14px;
-    }
-
-    #question {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .meta-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .topic-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .topic {
-      position: relative;
-      min-height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      border: 1px solid var(--line);
-      border-radius: 15px;
-      background: #fff;
-      color: #223756;
-      font-size: 14px;
-      font-weight: 950;
-      text-align: center;
-      box-shadow: 0 6px 16px rgba(60, 125, 242, .06);
-      user-select: none;
-    }
-
-    .topic input {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .topic:has(input:checked) {
-      border-color: #74aaff;
-      background: linear-gradient(180deg, #f9fcff 0%, #eaf3ff 100%);
-      color: var(--blue-deep);
-      box-shadow: 0 9px 22px rgba(60, 125, 242, .18);
-    }
-
-    .topic:has(input:focus-visible) {
-      outline: 3px solid rgba(60, 125, 242, .2);
-    }
-
-    .topic-mark {
-      font-size: 16px;
-      line-height: 1;
-    }
-
-    .two {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    .primary-actions,
-    .output-actions {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 9px;
-      margin-top: 14px;
-    }
-
-    .btn {
-      min-height: 50px;
-      border: 1px solid transparent;
-      border-radius: 15px;
-      padding: 11px 14px;
-      color: #fff;
-      background: var(--blue);
-      font-weight: 950;
-      box-shadow: 0 12px 22px rgba(60, 125, 242, .22);
-      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 15px 28px rgba(60, 125, 242, .25);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn.green {
-      background: linear-gradient(135deg, #22b982, var(--green));
-      box-shadow: 0 12px 24px rgba(24, 169, 120, .22);
-    }
-
-    .btn.secondary {
-      color: var(--blue-deep);
-      background: #fff;
-      border-color: #acd0ff;
-      box-shadow: 0 8px 18px rgba(60, 125, 242, .1);
-    }
-
-    .btn.soft {
-      color: #56647b;
-      background: #f7fbff;
-      border-color: #d8e8fb;
-      box-shadow: none;
-    }
-
-    .btn:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .side-stack {
-      display: grid;
-      gap: 14px;
-    }
-
-    .result-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 9px;
-    }
-
-    .check {
-      display: grid;
-      gap: 8px;
-      padding: 12px;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
-      box-shadow: 0 6px 16px rgba(60, 125, 242, .06);
-    }
-
-    .check-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .check strong {
-      font-size: 14px;
-      line-height: 1.35;
-    }
-
-    .check span {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .state {
-      flex: 0 0 auto;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 12px;
-      font-weight: 950;
-      white-space: nowrap;
-    }
-
-    .state.ok {
-      color: #0f7e58;
-      background: var(--green-soft);
-    }
-
-    .state.warn {
-      color: #a66a12;
-      background: var(--orange-soft);
-    }
-
-    .state.miss {
-      color: #b94e45;
-      background: var(--red-soft);
-    }
-
-    .notice {
-      border: 1px solid #cfe3fb;
-      border-radius: 16px;
-      padding: 13px;
-      background: linear-gradient(180deg, #f7fbff 0%, #eef7ff 100%);
-      color: #2d4365;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .shot-list {
-      display: grid;
-      gap: 8px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .shot-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 9px 10px;
-      background: #fff;
-      color: #2a3e5f;
-      font-size: 13px;
-      font-weight: 850;
-    }
-
-    .shot-list li::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      flex: 0 0 auto;
-      margin-top: 7px;
-      border-radius: 50%;
-      background: var(--purple);
-      box-shadow: 0 0 0 4px var(--purple-soft);
-    }
-
-    #output {
-      min-height: 360px;
-      resize: vertical;
-      font-family: "Microsoft JhengHei", "Noto Sans TC", ui-monospace, monospace;
-      font-size: 13px;
-      line-height: 1.7;
-      white-space: pre;
-      background: #fbfdff;
-    }
-
-    .status-line {
-      min-height: 22px;
-      color: var(--blue-deep);
-      font-size: 13px;
-      font-weight: 850;
-      margin: 9px 0 0;
-    }
-
-    .footer {
-      padding: 12px 0 34px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 750;
-      text-align: center;
-    }
-
-    @media (max-width: 350px) {
-      .topic-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (min-width: 760px) {
-      .hero-card {
-        grid-template-columns: 1fr auto;
-        align-items: end;
-        padding: 22px;
-      }
-
-      .layout {
-        grid-template-columns: minmax(0, 1fr) 390px;
-        align-items: start;
-      }
-
-      .two {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .primary-actions,
-      .output-actions {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .output-panel {
-        grid-column: 1 / -1;
-      }
-
-      .output-actions {
-        grid-template-columns: 1fr 1fr 180px;
-      }
-    }
-
-    @media (min-width: 1040px) {
-      .panel {
-        padding: 20px;
-      }
-
-      #sourceText {
-        min-height: 300px;
-      }
-    }
-  </style>
+  <title>科科命理任務包產生器 v0.2-alpha</title>
+  <meta name="description" content="紫微與八字資料整理器，不排盤、不解盤，只產生小科任務包。">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="hero">
     <div class="wrap hero-card">
       <div class="brand">
-        <div class="mark">紫</div>
+        <div class="mark">命</div>
         <div>
-          <h1>科科紫微任務包產生器 <span class="version">v0.1.1</span></h1>
-          <p class="subtitle">文墨天機文字包整理器｜不排盤、不解盤、只產生小科任務包</p>
+          <h1>科科命理任務包產生器 <span class="version">v0.2-alpha</span></h1>
+          <p class="subtitle">紫微 × 八字資料整理器｜不排盤、不解盤、只產生小科任務包</p>
         </div>
       </div>
       <div class="scope" aria-label="工具邊界">
@@ -553,370 +26,112 @@
     </div>
   </header>
 
-  <main class="wrap layout">
-    <section class="panel">
-      <div class="section-title">
-        <h2>1. 貼上資料</h2>
-        <span class="step">SOURCE</span>
+  <main class="wrap">
+    <section class="home-view" id="homeView">
+      <div class="home-title">
+        <p class="eyebrow">今天要產生哪一種任務包？</p>
+        <h2>先選模式，再整理資料</h2>
       </div>
 
-      <label class="field-label" for="sourceText">文墨天機文字命盤包</label>
-      <textarea id="sourceText" spellcheck="false" placeholder="請把文墨天機輸出的文字命盤包貼在這裡。資料只會留在目前瀏覽器畫面，不會上傳、不會儲存。"></textarea>
-      <div class="meta-row">
-        <span id="textCount">0 字</span>
-        <span>建議上限 50,000 字</span>
+      <div class="mode-grid" id="modeGrid" aria-label="模式選擇"></div>
+
+      <div class="safe-strip">本機處理｜不保存｜不接 API</div>
+    </section>
+
+    <section class="builder-view hidden" id="builderView" aria-live="polite">
+      <div class="mode-topbar">
+        <button class="ghost-btn" id="backHomeBtn" type="button">← 回首頁</button>
+        <button class="ghost-btn" id="switchModeBtn" type="button">切換模式</button>
       </div>
 
-      <div class="section-title" style="margin-top: 24px;">
-        <h2>2. 選擇本次任務</h2>
-        <span class="step">TASK</span>
-      </div>
-      <div class="topic-grid" id="topicGrid">
-        <label class="topic"><input type="checkbox" value="今日" data-output="今日總覽" data-shot="三合日盤截圖" checked><span class="topic-mark">☀</span><span>今日</span></label>
-        <label class="topic"><input type="checkbox" value="流時" data-output="此時此刻流時" data-requires-hour="true" data-shot="三合時盤截圖"><span class="topic-mark">🕒</span><span>流時</span></label>
-        <label class="topic"><input type="checkbox" value="工作" data-output="工作 / 事業" data-shot="官祿宮局部圖"><span class="topic-mark">💼</span><span>工作</span></label>
-        <label class="topic"><input type="checkbox" value="財務" data-output="財務 / 投資心態" data-shot="財帛宮局部圖"><span class="topic-mark">💰</span><span>財務</span></label>
-        <label class="topic"><input type="checkbox" value="感情" data-output="感情 / 婚姻" data-shot="夫妻宮局部圖"><span class="topic-mark">❤</span><span>感情</span></label>
-        <label class="topic"><input type="checkbox" value="健康" data-output="健康 / 身體能量" data-shot="疾厄宮局部圖"><span class="topic-mark">🌿</span><span>健康</span></label>
-        <label class="topic"><input type="checkbox" value="人際" data-output="人際 / 合作" data-shot="交友宮 / 兄弟宮局部圖"><span class="topic-mark">👥</span><span>人際</span></label>
-        <label class="topic"><input type="checkbox" value="本命" data-output="本命總覽" data-shot="三合本命盤截圖"><span class="topic-mark">☆</span><span>本命</span></label>
-        <label class="topic"><input type="checkbox" value="大限" data-output="大限十年" data-shot="大限盤截圖"><span class="topic-mark">🔟</span><span>大限</span></label>
-        <label class="topic"><input type="checkbox" value="指定年" data-output="指定年份" data-shot="流年截圖"><span class="topic-mark">📅</span><span>指定年</span></label>
-        <label class="topic"><input type="checkbox" value="指定月" data-output="指定月份" data-shot="流月截圖"><span class="topic-mark">🌙</span><span>指定月</span></label>
-        <label class="topic"><input type="checkbox" value="指定日" data-output="指定日期" data-shot="流日截圖"><span class="topic-mark">📆</span><span>指定日</span></label>
-      </div>
-      <p class="field-help">短標籤只用來選任務；完整說明會放進產出的任務包。</p>
+      <div class="layout">
+        <section class="panel main-panel">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow" id="modeEyebrow">MODE</p>
+              <h2 id="modeTitle">任務包</h2>
+            </div>
+            <span class="step" id="modeStep">v0.2-alpha</span>
+          </div>
+          <p class="mode-description" id="modeDescription"></p>
 
-      <div class="two">
-        <div>
-          <label class="field-label" for="focusPalaces">本次重點宮位</label>
-          <input id="focusPalaces" type="text" placeholder="例：官祿宮、命宮、遷移宮">
-        </div>
-        <div>
+          <div id="fieldsContainer"></div>
+          <div id="dateContainer"></div>
+
+          <div class="section-title task-title">
+            <h2 id="taskTitle">2. 選擇任務 / 目標</h2>
+            <span class="step">TASK</span>
+          </div>
+          <div class="topic-grid" id="topicGrid"></div>
+          <p class="field-help" id="topicHelp"></p>
+
+          <div id="extraFieldsContainer"></div>
+
+          <label class="field-label" for="question">科科本次想問什麼？</label>
+          <textarea id="question" spellcheck="false" placeholder="請輸入這次要交給小科的問題。"></textarea>
+
           <label class="field-label" for="outputType">下載格式</label>
           <select id="outputType">
             <option value="md">Markdown (.md)</option>
             <option value="txt">純文字 (.txt)</option>
           </select>
-        </div>
+
+          <div class="primary-actions">
+            <button class="btn green" id="buildBtn" type="button">產生任務包</button>
+            <button class="btn soft clear-action" type="button">清除畫面資料</button>
+          </div>
+        </section>
+
+        <aside class="side-stack">
+          <details class="panel compact" id="checkDetails" open>
+            <summary>
+              <span id="checkSummary">資料檢查</span>
+              <span>⌄</span>
+            </summary>
+            <div class="result-list" id="checkResults"></div>
+            <p class="hint">只做文字欄位偵測，不判斷命盤內容是否成立，也不補資料。</p>
+          </details>
+
+          <details class="panel compact" id="safeDetails">
+            <summary>
+              <span>安全提示：本機處理｜不保存｜不接 API</span>
+              <span>⌄</span>
+            </summary>
+            <div class="notice">
+              所有資料只在目前瀏覽器分頁處理。本工具不使用外部資源、API、瀏覽器儲存或資料庫。
+            </div>
+          </details>
+
+          <details class="panel compact" id="shotDetails">
+            <summary>
+              <span id="shotSummary">建議附圖 / 補充資料</span>
+              <span>⌄</span>
+            </summary>
+            <ul class="shot-list" id="screenshotHints"></ul>
+          </details>
+        </aside>
+
+        <section class="panel output-panel">
+          <div class="section-title">
+            <h2>輸出任務包</h2>
+            <span class="step">OUTPUT</span>
+          </div>
+          <textarea id="output" spellcheck="false" placeholder="按「產生任務包」後，Markdown / TXT 會出現在這裡。"></textarea>
+          <div class="output-actions">
+            <button class="btn secondary" id="copyBtn" type="button" disabled>一鍵複製</button>
+            <button class="btn" id="downloadBtn" type="button" disabled>下載檔案</button>
+            <button class="btn soft clear-action" type="button">清除畫面資料</button>
+          </div>
+          <p class="status-line" id="statusText">尚未產生任務包。</p>
+        </section>
       </div>
-
-      <label class="field-label" for="question">科科本次想問什麼？</label>
-      <textarea id="question" placeholder="例：請分析今天工作運、午時當下狀態、容易卡住的地方，以及如何穩住局面。"></textarea>
-
-      <div class="primary-actions">
-        <button class="btn green" id="buildBtn" type="button">產生任務包</button>
-        <button class="btn soft clear-action" type="button">清除畫面資料</button>
-      </div>
-    </section>
-
-    <aside class="side-stack">
-      <section class="panel compact">
-        <div class="section-title">
-          <h2>資料檢查結果</h2>
-          <span class="step">CHECK</span>
-        </div>
-        <div class="result-list" id="checkResults"></div>
-        <p class="hint">只做文字欄位偵測，不判斷命盤內容是否成立，也不補資料。</p>
-      </section>
-
-      <section class="panel compact">
-        <div class="section-title">
-          <h2>安全提示</h2>
-          <span class="step">LOCAL</span>
-        </div>
-        <div class="notice">
-          所有資料只在目前瀏覽器分頁處理。本工具不使用外部字型、CDN、API、localStorage、Cookie 或資料庫。
-        </div>
-      </section>
-
-      <section class="panel compact">
-        <div class="section-title">
-          <h2>建議附圖清單</h2>
-          <span class="step">SHOT</span>
-        </div>
-        <ul class="shot-list" id="screenshotHints"></ul>
-      </section>
-    </aside>
-
-    <section class="panel output-panel">
-      <div class="section-title">
-        <h2>3. 輸出任務包</h2>
-        <span class="step">OUTPUT</span>
-      </div>
-      <textarea id="output" spellcheck="false" placeholder="按「產生任務包」後，Markdown / TXT 會出現在這裡。"></textarea>
-      <div class="output-actions">
-        <button class="btn secondary" id="copyBtn" type="button" disabled>一鍵複製</button>
-        <button class="btn" id="downloadBtn" type="button" disabled>下載檔案</button>
-        <button class="btn soft clear-action" type="button">清除畫面資料</button>
-      </div>
-      <p class="status-line" id="statusText">尚未產生任務包。</p>
     </section>
   </main>
 
   <footer class="footer">
-    科科紫微任務包產生器 v0.1.1｜文墨天機負責排盤，小丸只整理資料包，小科再依資料解盤。
+    科科命理任務包產生器 v0.2-alpha｜整理資料，不計算命理。
   </footer>
 
-  <script>
-    const sourceText = document.querySelector("#sourceText");
-    const textCount = document.querySelector("#textCount");
-    const checkResults = document.querySelector("#checkResults");
-    const screenshotHints = document.querySelector("#screenshotHints");
-    const output = document.querySelector("#output");
-    const question = document.querySelector("#question");
-    const focusPalaces = document.querySelector("#focusPalaces");
-    const outputType = document.querySelector("#outputType");
-    const statusText = document.querySelector("#statusText");
-    const buildBtn = document.querySelector("#buildBtn");
-    const copyBtn = document.querySelector("#copyBtn");
-    const downloadBtn = document.querySelector("#downloadBtn");
-
-    const palaceNames = ["命宮", "兄弟宮", "夫妻宮", "子女宮", "財帛宮", "疾厄宮", "遷移宮", "交友宮", "僕役宮", "官祿宮", "事業宮", "田宅宮", "福德宮", "父母宮"];
-
-    const checks = [
-      {
-        id: "appVersion",
-        label: "App版本",
-        help: "建議保留文墨天機版本，方便小科知道資料來源。",
-        test: text => /(App\s*版本|APP\s*版本|版本)\s*[:：]?\s*[0-9][0-9A-Za-z._-]*/i.test(text)
-      },
-      {
-        id: "starCode",
-        label: "安星碼",
-        help: "用來標記這份命盤文字包來源。",
-        test: text => /安星碼\s*[:：]?\s*[A-Za-z0-9]{3,}/i.test(text)
-      },
-      {
-        id: "basicInfo",
-        label: "基本信息",
-        help: "姓名、性別、出生時間、陰陽曆等基本資料。",
-        test: text => /(基本信息|基本資料|姓名|性別|出生|陽曆|陰曆|農曆|命主|身主)/.test(text)
-      },
-      {
-        id: "palaces",
-        label: "命盤十二宮",
-        help: "至少偵測到 10 個常見宮位名稱。",
-        test: text => uniqueMatches(text, palaceNames).length >= 10,
-        detail: text => `${uniqueMatches(text, palaceNames).length} / 12+`
-      },
-      {
-        id: "year",
-        label: "流年",
-        help: "今日與指定年份任務通常需要。",
-        test: text => /流年/.test(text)
-      },
-      {
-        id: "month",
-        label: "流月",
-        help: "今日與近期狀態任務建議包含。",
-        test: text => /流月/.test(text)
-      },
-      {
-        id: "day",
-        label: "流日",
-        help: "今日任務建議包含。",
-        test: text => /流日/.test(text)
-      },
-      {
-        id: "hour",
-        label: "流時 / 時曜",
-        help: "勾選流時時建議確認。",
-        test: text => /(流時|時曜)/.test(text),
-        conditional: true
-      }
-    ];
-
-    function uniqueMatches(text, words) {
-      return words.filter(word => text.includes(word));
-    }
-
-    function selectedTopicInputs() {
-      return [...document.querySelectorAll("#topicGrid input:checked")];
-    }
-
-    function selectedTopics() {
-      return selectedTopicInputs().map(item => item.dataset.output || item.value);
-    }
-
-    function requiresHour() {
-      return selectedTopicInputs().some(item => item.dataset.requiresHour === "true");
-    }
-
-    function analyze() {
-      const text = sourceText.value;
-      const needHour = requiresHour();
-
-      return checks.map(check => {
-        const ok = check.test(text);
-        const required = !check.conditional || needHour;
-        const state = ok ? "ok" : required ? "miss" : "warn";
-        const stateText = ok ? "已偵測" : required ? "未偵測" : "建議補齊";
-        return {
-          ...check,
-          ok,
-          required,
-          state,
-          stateText,
-          detail: check.detail ? check.detail(text) : ""
-        };
-      });
-    }
-
-    function renderChecks() {
-      const results = analyze();
-      checkResults.innerHTML = results.map(item => `
-        <div class="check">
-          <div class="check-head">
-            <strong>${item.label}${item.detail ? `：${item.detail}` : ""}</strong>
-            <div class="state ${item.state}">${item.stateText}</div>
-          </div>
-          <span>${item.help}</span>
-        </div>
-      `).join("");
-      return results;
-    }
-
-    function renderScreenshotHints() {
-      const shots = suggestScreenshots();
-      screenshotHints.innerHTML = shots.map(item => `<li>${item}</li>`).join("");
-    }
-
-    function escapeCodeFence(text) {
-      return text.replaceAll("```", "`\u200b``");
-    }
-
-    function buildPacket() {
-      const text = sourceText.value.trim();
-      const topics = selectedTopics();
-      const results = renderChecks();
-      renderScreenshotHints();
-      const dateText = new Date().toLocaleDateString("zh-TW", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      });
-      const missing = results.filter(item => item.required && !item.ok);
-      const warnings = missing.length
-        ? missing.map(item => `- ${item.label}：未偵測，建議補齊文字包後再交給小科。`).join("\n")
-        : "- 必要欄位目前皆已偵測。";
-      const focus = focusPalaces.value.trim() || "由小科依文字包與截圖判斷，請勿自行補盤。";
-      const ask = question.value.trim() || "請依本次勾選主題進行解盤，並明確標示資料不足之處。";
-
-      const packet = `# 科科紫微解盤任務包
-
-## 1. 任務類型
-- 產生日期：${dateText}
-- 任務主題：${topics.length ? topics.join("、") : "未選擇"}
-- 盤源：文墨天機文字包
-- 工具版本：科科紫微任務包產生器 v0.1.1
-
-## 2. 小科解盤規則
-- 文墨天機負責排盤，小科只負責依已提供資料解盤。
-- 文字包為主資料，截圖為佐證。
-- 不得自行補盤、推算缺漏欄位或宣稱資料由本工具 calculated。
-- 不得把命理當絕對預言。
-- 不得提供醫療診斷、投資買賣指令或其他高風險決策指令。
-- 若資料不足，請先列出不足處，再保守解讀。
-
-## 3. 科科本次問題
-${ask}
-
-## 4. 資料檢查
-${results.map(item => `- ${item.label}：${item.stateText}${item.detail ? `（${item.detail}）` : ""}`).join("\n")}
-
-## 5. 需補齊或確認
-${warnings}
-
-## 6. 建議附上的截圖
-${suggestScreenshots().map(item => `- ${item}`).join("\n")}
-
-## 7. 本次重點宮位
-${focus}
-
-## 8. 原始文墨天機文字包
-\`\`\`text
-${escapeCodeFence(text || "（尚未貼上文字包）")}
-\`\`\`
-`;
-
-      output.value = packet;
-      copyBtn.disabled = false;
-      downloadBtn.disabled = false;
-      statusText.textContent = missing.length
-        ? `已產生任務包；有 ${missing.length} 個必要欄位未偵測。`
-        : "已產生任務包；必要欄位目前皆已偵測。";
-    }
-
-    function suggestScreenshots() {
-      const shots = new Set(["三合日盤截圖", "四化 / 飛星圖（選配）"]);
-      selectedTopicInputs().forEach(item => {
-        if (item.dataset.shot) shots.add(item.dataset.shot);
-      });
-      return [...shots];
-    }
-
-    async function copyOutput() {
-      if (!output.value) return;
-      try {
-        await navigator.clipboard.writeText(output.value);
-        statusText.textContent = "已複製到剪貼簿。";
-      } catch (error) {
-        output.focus();
-        output.select();
-        document.execCommand("copy");
-        statusText.textContent = "已用備用方式複製。";
-      }
-    }
-
-    function downloadOutput() {
-      if (!output.value) return;
-      const type = outputType.value;
-      const blob = new Blob([output.value], { type: "text/plain;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `keke-ziwei-task-packet-${new Date().toISOString().slice(0, 10)}.${type}`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
-      statusText.textContent = `已下載 .${type} 檔案。`;
-    }
-
-    function clearAll() {
-      sourceText.value = "";
-      question.value = "";
-      focusPalaces.value = "";
-      output.value = "";
-      copyBtn.disabled = true;
-      downloadBtn.disabled = true;
-      statusText.textContent = "已清除畫面資料。";
-      updateCount();
-      renderChecks();
-      renderScreenshotHints();
-    }
-
-    function updateCount() {
-      textCount.textContent = `${sourceText.value.length.toLocaleString("zh-TW")} 字`;
-    }
-
-    sourceText.addEventListener("input", () => {
-      updateCount();
-      renderChecks();
-    });
-    document.querySelector("#topicGrid").addEventListener("change", () => {
-      renderChecks();
-      renderScreenshotHints();
-    });
-    buildBtn.addEventListener("click", buildPacket);
-    document.querySelectorAll(".clear-action").forEach(button => button.addEventListener("click", clearAll));
-    copyBtn.addEventListener("click", copyOutput);
-    downloadBtn.addEventListener("click", downloadOutput);
-
-    updateCount();
-    renderChecks();
-    renderScreenshotHints();
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
