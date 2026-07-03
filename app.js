@@ -1,5 +1,5 @@
 (function () {
-  const VERSION = "科科命理任務包產生器 v0.2-alpha";
+  const VERSION = "科科命理任務包產生器 v0.2-alpha.1";
   const ALLOWED_STATES = {
     ok: "已偵測",
     miss: "未偵測",
@@ -450,7 +450,7 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
     els.modeEyebrow.textContent = mode.eyebrow;
     els.modeTitle.textContent = mode.title;
     els.modeDescription.textContent = mode.description;
-    els.modeStep.textContent = "v0.2-alpha";
+    els.modeStep.textContent = "v0.2-alpha.1";
     els.buildBtn.textContent = mode.buildLabel;
     els.topicHelp.textContent = mode.topicHelp;
 
