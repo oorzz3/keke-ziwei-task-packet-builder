@@ -3,38 +3,59 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>科科紫微任務包產生器 v0.1</title>
-  <meta name="description" content="純前端、本機處理的文墨天機文字包整理工具，產生可交給小科解盤的 Markdown / TXT 任務包。">
+  <title>科科紫微任務包產生器 v0.1.1</title>
+  <meta name="description" content="文墨天機文字包整理器，不排盤、不解盤，只產生小科任務包。">
   <style>
     :root {
-      --paper: #fbfaf5;
-      --ink: #20231f;
-      --muted: #687064;
-      --line: #d8ddcf;
-      --field: #fffef9;
-      --green: #2f7d5c;
-      --gold: #b8822f;
-      --red: #b94d43;
-      --blue: #315f8f;
-      --shadow: 0 18px 48px rgba(36, 42, 32, .1);
-      --radius: 8px;
+      --bg: #eef7ff;
+      --bg-soft: #f7fbff;
+      --card: #ffffff;
+      --card-soft: #fafdff;
+      --ink: #17243b;
+      --muted: #62718a;
+      --line: #d9e8fb;
+      --line-strong: #bfd6f7;
+      --blue: #3c7df2;
+      --blue-soft: #eaf3ff;
+      --blue-deep: #245bbd;
+      --green: #18a978;
+      --green-soft: #e8f8f1;
+      --orange: #f2a33a;
+      --orange-soft: #fff3df;
+      --red: #d86a61;
+      --red-soft: #fdeceb;
+      --purple: #8b77ee;
+      --purple-soft: #f0edff;
+      --shadow: 0 18px 45px rgba(64, 118, 190, .14);
+      --shadow-soft: 0 8px 26px rgba(64, 118, 190, .1);
+      --radius: 18px;
+      --radius-sm: 12px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
       color: var(--ink);
       background:
-        linear-gradient(rgba(32, 35, 31, .035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(32, 35, 31, .03) 1px, transparent 1px),
-        var(--paper);
-      background-size: 24px 24px;
-      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+        radial-gradient(circle at 12% -10%, rgba(139, 119, 238, .18), transparent 32%),
+        radial-gradient(circle at 92% 0%, rgba(83, 169, 255, .2), transparent 30%),
+        linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 48%, #f7fbff 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
       line-height: 1.6;
+      min-height: 100vh;
     }
 
-    button, textarea, input, select {
+    button,
+    textarea,
+    input,
+    select {
       font: inherit;
     }
 
@@ -43,144 +64,177 @@
     }
 
     .wrap {
-      width: min(1120px, calc(100% - 28px));
+      width: min(1160px, calc(100% - 24px));
       margin: 0 auto;
     }
 
     .hero {
-      padding: 26px 0 18px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(251, 250, 245, .88);
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      backdrop-filter: blur(12px);
+      padding: 24px 0 18px;
     }
 
-    .hero-grid {
+    .hero-card {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-
-    .mark {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      color: #fff;
-      background: var(--ink);
-      font-weight: 900;
+      gap: 16px;
+      padding: 18px;
+      border: 1px solid rgba(191, 214, 247, .86);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, .78);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
     }
 
     .brand {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 13px;
       align-items: center;
-      gap: 12px;
+    }
+
+    .mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 12px 24px rgba(60, 125, 242, .28);
+      font-weight: 950;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(24px, 7vw, 44px);
-      line-height: 1.08;
+      font-size: clamp(25px, 6.2vw, 44px);
+      line-height: 1.12;
       letter-spacing: 0;
     }
 
+    .version {
+      color: var(--blue);
+      font-size: .48em;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
     .subtitle {
-      margin: 8px 0 0;
+      margin: 7px 0 0;
       color: var(--muted);
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 750;
     }
 
     .scope {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
-      flex-wrap: wrap;
     }
 
     .tag {
+      min-height: 36px;
+      display: grid;
+      place-items: center;
       border: 1px solid var(--line);
-      background: rgba(255, 254, 249, .85);
-      padding: 6px 10px;
       border-radius: 999px;
-      color: #3d493a;
+      background: var(--card);
+      color: var(--blue-deep);
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 900;
+      box-shadow: 0 7px 18px rgba(60, 125, 242, .08);
+      white-space: nowrap;
     }
 
     main {
-      padding: 18px 0 44px;
+      padding: 2px 0 44px;
     }
 
-    .grid {
+    .layout {
       display: grid;
       gap: 14px;
     }
 
     .panel {
-      background: rgba(255, 254, 249, .92);
-      border: 1px solid var(--line);
+      border: 1px solid rgba(191, 214, 247, .9);
       border-radius: var(--radius);
+      background: rgba(255, 255, 255, .92);
       box-shadow: var(--shadow);
       padding: 16px;
     }
 
-    .panel.slim {
-      box-shadow: none;
+    .panel.compact {
+      box-shadow: var(--shadow-soft);
     }
 
     .section-title {
-      margin: 0 0 12px;
-      font-size: 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      margin: 0 0 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.3;
+      letter-spacing: 0;
     }
 
     .step {
-      color: var(--gold);
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: .08em;
+      color: var(--blue);
+      background: var(--blue-soft);
+      border: 1px solid #d5e8ff;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
     }
 
     .field-label {
       display: block;
-      margin: 12px 0 7px;
-      color: #344032;
+      margin: 13px 0 7px;
+      color: #203354;
       font-weight: 900;
+    }
+
+    .field-help,
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 720;
+      margin: 8px 0 0;
     }
 
     textarea,
     input[type="text"],
     select {
       width: 100%;
-      border: 1px solid #cdd4c2;
-      border-radius: var(--radius);
-      background: var(--field);
+      border: 1px solid #c8ddf7;
+      border-radius: var(--radius-sm);
+      background: var(--card-soft);
       color: var(--ink);
-      padding: 12px;
+      padding: 12px 13px;
       outline: none;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
     }
 
     textarea:focus,
     input[type="text"]:focus,
     select:focus {
-      border-color: var(--green);
-      box-shadow: 0 0 0 3px rgba(47, 125, 92, .14);
+      border-color: #7fb2ff;
+      box-shadow: 0 0 0 4px rgba(60, 125, 242, .13);
+      background: #fff;
     }
 
     #sourceText {
-      min-height: 280px;
+      min-height: 260px;
       resize: vertical;
-      font-family: "Noto Sans Mono CJK TC", "Microsoft JhengHei", ui-monospace, monospace;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", ui-monospace, monospace;
       font-size: 14px;
     }
 
     #question {
-      min-height: 96px;
+      min-height: 100px;
       resize: vertical;
     }
 
@@ -188,34 +242,57 @@
       display: flex;
       justify-content: space-between;
       gap: 12px;
+      margin-top: 8px;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
-      margin-top: 7px;
+      font-weight: 800;
     }
 
     .topic-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
     }
 
     .topic {
+      position: relative;
+      min-height: 50px;
       display: flex;
       align-items: center;
-      gap: 9px;
-      padding: 10px;
+      justify-content: center;
+      gap: 5px;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: #fffef9;
-      font-weight: 800;
-      min-height: 46px;
+      border-radius: 15px;
+      background: #fff;
+      color: #223756;
+      font-size: 14px;
+      font-weight: 950;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(60, 125, 242, .06);
+      user-select: none;
     }
 
     .topic input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--green);
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .topic:has(input:checked) {
+      border-color: #74aaff;
+      background: linear-gradient(180deg, #f9fcff 0%, #eaf3ff 100%);
+      color: var(--blue-deep);
+      box-shadow: 0 9px 22px rgba(60, 125, 242, .18);
+    }
+
+    .topic:has(input:focus-visible) {
+      outline: 3px solid rgba(60, 125, 242, .2);
+    }
+
+    .topic-mark {
+      font-size: 16px;
+      line-height: 1;
     }
 
     .two {
@@ -224,162 +301,247 @@
       gap: 12px;
     }
 
-    .result-list {
-      display: grid;
-      gap: 8px;
-    }
-
-    .check {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      align-items: center;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 10px;
-      background: #fffef9;
-    }
-
-    .check strong {
-      display: block;
-      font-size: 14px;
-    }
-
-    .check span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    .state {
-      white-space: nowrap;
-      border-radius: 999px;
-      padding: 5px 9px;
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .state.ok {
-      background: #e9f6ef;
-      color: var(--green);
-    }
-
-    .state.warn {
-      background: #fff5df;
-      color: #9b6b22;
-    }
-
-    .state.miss {
-      background: #fae9e7;
-      color: var(--red);
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-      margin: 8px 0 0;
-    }
-
-    .actions {
+    .primary-actions,
+    .output-actions {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 8px;
-      margin-top: 12px;
+      gap: 9px;
+      margin-top: 14px;
     }
 
     .btn {
-      min-height: 48px;
-      border-radius: var(--radius);
-      border: 1px solid var(--ink);
-      background: var(--ink);
+      min-height: 50px;
+      border: 1px solid transparent;
+      border-radius: 15px;
+      padding: 11px 14px;
       color: #fff;
-      font-weight: 900;
-      padding: 10px 12px;
+      background: var(--blue);
+      font-weight: 950;
+      box-shadow: 0 12px 22px rgba(60, 125, 242, .22);
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
     }
 
-    .btn.secondary {
-      background: #fffef9;
-      color: var(--ink);
-      border-color: #aeb8a5;
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 15px 28px rgba(60, 125, 242, .25);
+    }
+
+    .btn:active {
+      transform: translateY(0);
     }
 
     .btn.green {
-      background: var(--green);
-      border-color: var(--green);
+      background: linear-gradient(135deg, #22b982, var(--green));
+      box-shadow: 0 12px 24px rgba(24, 169, 120, .22);
     }
 
-    .btn.blue {
-      background: var(--blue);
-      border-color: var(--blue);
+    .btn.secondary {
+      color: var(--blue-deep);
+      background: #fff;
+      border-color: #acd0ff;
+      box-shadow: 0 8px 18px rgba(60, 125, 242, .1);
+    }
+
+    .btn.soft {
+      color: #56647b;
+      background: #f7fbff;
+      border-color: #d8e8fb;
+      box-shadow: none;
     }
 
     .btn:disabled {
       opacity: .45;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .side-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .result-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 9px;
+    }
+
+    .check {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
+      box-shadow: 0 6px 16px rgba(60, 125, 242, .06);
+    }
+
+    .check-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .check strong {
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .check span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .state {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .state.ok {
+      color: #0f7e58;
+      background: var(--green-soft);
+    }
+
+    .state.warn {
+      color: #a66a12;
+      background: var(--orange-soft);
+    }
+
+    .state.miss {
+      color: #b94e45;
+      background: var(--red-soft);
+    }
+
+    .notice {
+      border: 1px solid #cfe3fb;
+      border-radius: 16px;
+      padding: 13px;
+      background: linear-gradient(180deg, #f7fbff 0%, #eef7ff 100%);
+      color: #2d4365;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .shot-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .shot-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 9px 10px;
+      background: #fff;
+      color: #2a3e5f;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .shot-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      flex: 0 0 auto;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--purple);
+      box-shadow: 0 0 0 4px var(--purple-soft);
     }
 
     #output {
       min-height: 360px;
       resize: vertical;
-      font-family: "Noto Sans Mono CJK TC", "Microsoft JhengHei", ui-monospace, monospace;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", ui-monospace, monospace;
       font-size: 13px;
+      line-height: 1.7;
       white-space: pre;
+      background: #fbfdff;
     }
 
-    .notice {
-      border-left: 4px solid var(--green);
-      padding: 10px 12px;
-      background: #f3f7ec;
-      color: #3e4a3a;
-      border-radius: 0 var(--radius) var(--radius) 0;
+    .status-line {
+      min-height: 22px;
+      color: var(--blue-deep);
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 850;
+      margin: 9px 0 0;
     }
 
     .footer {
+      padding: 12px 0 34px;
       color: var(--muted);
       font-size: 13px;
-      padding: 18px 0 32px;
+      font-weight: 750;
       text-align: center;
     }
 
-    @media (min-width: 720px) {
-      .hero-grid {
-        grid-template-columns: 1fr auto;
-        align-items: end;
-      }
-
-      .grid {
-        grid-template-columns: minmax(0, 1fr) 390px;
-        align-items: start;
-      }
-
+    @media (max-width: 350px) {
       .topic-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 760px) {
+      .hero-card {
+        grid-template-columns: 1fr auto;
+        align-items: end;
+        padding: 22px;
+      }
+
+      .layout {
+        grid-template-columns: minmax(0, 1fr) 390px;
+        align-items: start;
       }
 
       .two {
         grid-template-columns: 1fr 1fr;
       }
 
-      .actions {
+      .primary-actions,
+      .output-actions {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .output-panel {
+        grid-column: 1 / -1;
+      }
+
+      .output-actions {
+        grid-template-columns: 1fr 1fr 180px;
+      }
+    }
+
+    @media (min-width: 1040px) {
+      .panel {
+        padding: 20px;
+      }
+
+      #sourceText {
+        min-height: 300px;
       }
     }
   </style>
 </head>
 <body>
   <header class="hero">
-    <div class="wrap hero-grid">
-      <div>
-        <div class="brand">
-          <div class="mark">紫</div>
-          <div>
-            <h1>科科紫微任務包產生器 <span class="step">v0.1</span></h1>
-            <p class="subtitle">把文墨天機文字包整理成可交給小科的 Markdown / TXT。只整理，不排盤，不解盤。</p>
-          </div>
+    <div class="wrap hero-card">
+      <div class="brand">
+        <div class="mark">紫</div>
+        <div>
+          <h1>科科紫微任務包產生器 <span class="version">v0.1.1</span></h1>
+          <p class="subtitle">文墨天機文字包整理器｜不排盤、不解盤、只產生小科任務包</p>
         </div>
       </div>
       <div class="scope" aria-label="工具邊界">
@@ -391,9 +553,13 @@
     </div>
   </header>
 
-  <main class="wrap grid">
+  <main class="wrap layout">
     <section class="panel">
-      <h2 class="section-title"><span>1. 貼上資料</span><span class="step">SOURCE</span></h2>
+      <div class="section-title">
+        <h2>1. 貼上資料</h2>
+        <span class="step">SOURCE</span>
+      </div>
+
       <label class="field-label" for="sourceText">文墨天機文字命盤包</label>
       <textarea id="sourceText" spellcheck="false" placeholder="請把文墨天機輸出的文字命盤包貼在這裡。資料只會留在目前瀏覽器畫面，不會上傳、不會儲存。"></textarea>
       <div class="meta-row">
@@ -401,19 +567,25 @@
         <span>建議上限 50,000 字</span>
       </div>
 
-      <h2 class="section-title" style="margin-top: 22px;"><span>2. 選擇本次任務</span><span class="step">TASK</span></h2>
-      <div class="topic-grid" id="topicGrid">
-        <label class="topic"><input type="checkbox" value="今日總覽" checked>今日總覽</label>
-        <label class="topic"><input type="checkbox" value="此時此刻流時" data-requires-hour="true">此時此刻流時</label>
-        <label class="topic"><input type="checkbox" value="工作 / 事業">工作 / 事業</label>
-        <label class="topic"><input type="checkbox" value="財務 / 投資心態">財務 / 投資心態</label>
-        <label class="topic"><input type="checkbox" value="感情 / 婚姻">感情 / 婚姻</label>
-        <label class="topic"><input type="checkbox" value="健康 / 身體能量">健康 / 身體能量</label>
-        <label class="topic"><input type="checkbox" value="人際 / 合作">人際 / 合作</label>
-        <label class="topic"><input type="checkbox" value="本命總覽">本命總覽</label>
-        <label class="topic"><input type="checkbox" value="大限十年">大限十年</label>
-        <label class="topic"><input type="checkbox" value="指定年份">指定年份</label>
+      <div class="section-title" style="margin-top: 24px;">
+        <h2>2. 選擇本次任務</h2>
+        <span class="step">TASK</span>
       </div>
+      <div class="topic-grid" id="topicGrid">
+        <label class="topic"><input type="checkbox" value="今日" data-output="今日總覽" data-shot="三合日盤截圖" checked><span class="topic-mark">☀</span><span>今日</span></label>
+        <label class="topic"><input type="checkbox" value="流時" data-output="此時此刻流時" data-requires-hour="true" data-shot="三合時盤截圖"><span class="topic-mark">🕒</span><span>流時</span></label>
+        <label class="topic"><input type="checkbox" value="工作" data-output="工作 / 事業" data-shot="官祿宮局部圖"><span class="topic-mark">💼</span><span>工作</span></label>
+        <label class="topic"><input type="checkbox" value="財務" data-output="財務 / 投資心態" data-shot="財帛宮局部圖"><span class="topic-mark">💰</span><span>財務</span></label>
+        <label class="topic"><input type="checkbox" value="感情" data-output="感情 / 婚姻" data-shot="夫妻宮局部圖"><span class="topic-mark">❤</span><span>感情</span></label>
+        <label class="topic"><input type="checkbox" value="健康" data-output="健康 / 身體能量" data-shot="疾厄宮局部圖"><span class="topic-mark">🌿</span><span>健康</span></label>
+        <label class="topic"><input type="checkbox" value="人際" data-output="人際 / 合作" data-shot="交友宮 / 兄弟宮局部圖"><span class="topic-mark">👥</span><span>人際</span></label>
+        <label class="topic"><input type="checkbox" value="本命" data-output="本命總覽" data-shot="三合本命盤截圖"><span class="topic-mark">☆</span><span>本命</span></label>
+        <label class="topic"><input type="checkbox" value="大限" data-output="大限十年" data-shot="大限盤截圖"><span class="topic-mark">🔟</span><span>大限</span></label>
+        <label class="topic"><input type="checkbox" value="指定年" data-output="指定年份" data-shot="流年截圖"><span class="topic-mark">📅</span><span>指定年</span></label>
+        <label class="topic"><input type="checkbox" value="指定月" data-output="指定月份" data-shot="流月截圖"><span class="topic-mark">🌙</span><span>指定月</span></label>
+        <label class="topic"><input type="checkbox" value="指定日" data-output="指定日期" data-shot="流日截圖"><span class="topic-mark">📆</span><span>指定日</span></label>
+      </div>
+      <p class="field-help">短標籤只用來選任務；完整說明會放進產出的任務包。</p>
 
       <div class="two">
         <div>
@@ -432,48 +604,71 @@
       <label class="field-label" for="question">科科本次想問什麼？</label>
       <textarea id="question" placeholder="例：請分析今天工作運、午時當下狀態、容易卡住的地方，以及如何穩住局面。"></textarea>
 
-      <div class="actions">
+      <div class="primary-actions">
         <button class="btn green" id="buildBtn" type="button">產生任務包</button>
-        <button class="btn secondary" id="clearBtn" type="button">清除畫面資料</button>
+        <button class="btn soft clear-action" type="button">清除畫面資料</button>
       </div>
     </section>
 
-    <aside class="panel slim">
-      <h2 class="section-title"><span>資料檢查</span><span class="step">CHECK</span></h2>
-      <div class="result-list" id="checkResults"></div>
-      <p class="hint">檢查只確認文字包是否「看起來有包含」必要段落，不判斷命盤正確性，也不補資料。</p>
+    <aside class="side-stack">
+      <section class="panel compact">
+        <div class="section-title">
+          <h2>資料檢查結果</h2>
+          <span class="step">CHECK</span>
+        </div>
+        <div class="result-list" id="checkResults"></div>
+        <p class="hint">只做文字欄位偵測，不判斷命盤內容是否成立，也不補資料。</p>
+      </section>
 
-      <div class="notice" style="margin-top: 14px;">
-        所有資料只在目前瀏覽器分頁處理。這個工具不使用外部字型、CDN、API、localStorage、Cookie 或資料庫。
-      </div>
+      <section class="panel compact">
+        <div class="section-title">
+          <h2>安全提示</h2>
+          <span class="step">LOCAL</span>
+        </div>
+        <div class="notice">
+          所有資料只在目前瀏覽器分頁處理。本工具不使用外部字型、CDN、API、localStorage、Cookie 或資料庫。
+        </div>
+      </section>
+
+      <section class="panel compact">
+        <div class="section-title">
+          <h2>建議附圖清單</h2>
+          <span class="step">SHOT</span>
+        </div>
+        <ul class="shot-list" id="screenshotHints"></ul>
+      </section>
     </aside>
 
-    <section class="panel" style="grid-column: 1 / -1;">
-      <h2 class="section-title"><span>3. 輸出任務包</span><span class="step">OUTPUT</span></h2>
-      <textarea id="output" spellcheck="false" placeholder="按「產生任務包」後，Markdown / TXT 會出現在這裡。"></textarea>
-      <div class="actions">
-        <button class="btn blue" id="copyBtn" type="button" disabled>一鍵複製</button>
-        <button class="btn" id="downloadBtn" type="button" disabled>下載檔案</button>
+    <section class="panel output-panel">
+      <div class="section-title">
+        <h2>3. 輸出任務包</h2>
+        <span class="step">OUTPUT</span>
       </div>
-      <p class="hint" id="statusText">尚未產生任務包。</p>
+      <textarea id="output" spellcheck="false" placeholder="按「產生任務包」後，Markdown / TXT 會出現在這裡。"></textarea>
+      <div class="output-actions">
+        <button class="btn secondary" id="copyBtn" type="button" disabled>一鍵複製</button>
+        <button class="btn" id="downloadBtn" type="button" disabled>下載檔案</button>
+        <button class="btn soft clear-action" type="button">清除畫面資料</button>
+      </div>
+      <p class="status-line" id="statusText">尚未產生任務包。</p>
     </section>
   </main>
 
   <footer class="footer">
-    科科紫微任務包產生器 v0.1｜文墨天機負責排盤，小丸只整理資料包，小科再依資料解盤。
+    科科紫微任務包產生器 v0.1.1｜文墨天機負責排盤，小丸只整理資料包，小科再依資料解盤。
   </footer>
 
   <script>
     const sourceText = document.querySelector("#sourceText");
     const textCount = document.querySelector("#textCount");
     const checkResults = document.querySelector("#checkResults");
+    const screenshotHints = document.querySelector("#screenshotHints");
     const output = document.querySelector("#output");
     const question = document.querySelector("#question");
     const focusPalaces = document.querySelector("#focusPalaces");
     const outputType = document.querySelector("#outputType");
     const statusText = document.querySelector("#statusText");
     const buildBtn = document.querySelector("#buildBtn");
-    const clearBtn = document.querySelector("#clearBtn");
     const copyBtn = document.querySelector("#copyBtn");
     const downloadBtn = document.querySelector("#downloadBtn");
 
@@ -526,7 +721,7 @@
       {
         id: "hour",
         label: "流時 / 時曜",
-        help: "只有勾選流時時列為必備。",
+        help: "勾選流時時建議確認。",
         test: text => /(流時|時曜)/.test(text),
         conditional: true
       }
@@ -536,12 +731,16 @@
       return words.filter(word => text.includes(word));
     }
 
+    function selectedTopicInputs() {
+      return [...document.querySelectorAll("#topicGrid input:checked")];
+    }
+
     function selectedTopics() {
-      return [...document.querySelectorAll("#topicGrid input:checked")].map(item => item.value);
+      return selectedTopicInputs().map(item => item.dataset.output || item.value);
     }
 
     function requiresHour() {
-      return [...document.querySelectorAll("#topicGrid input:checked")].some(item => item.dataset.requiresHour === "true");
+      return selectedTopicInputs().some(item => item.dataset.requiresHour === "true");
     }
 
     function analyze() {
@@ -552,7 +751,7 @@
         const ok = check.test(text);
         const required = !check.conditional || needHour;
         const state = ok ? "ok" : required ? "miss" : "warn";
-        const stateText = ok ? "已偵測" : required ? "未偵測" : "未選流時";
+        const stateText = ok ? "已偵測" : required ? "未偵測" : "建議補齊";
         return {
           ...check,
           ok,
@@ -568,14 +767,19 @@
       const results = analyze();
       checkResults.innerHTML = results.map(item => `
         <div class="check">
-          <div>
+          <div class="check-head">
             <strong>${item.label}${item.detail ? `：${item.detail}` : ""}</strong>
-            <span>${item.help}</span>
+            <div class="state ${item.state}">${item.stateText}</div>
           </div>
-          <div class="state ${item.state}">${item.stateText}</div>
+          <span>${item.help}</span>
         </div>
       `).join("");
       return results;
+    }
+
+    function renderScreenshotHints() {
+      const shots = suggestScreenshots();
+      screenshotHints.innerHTML = shots.map(item => `<li>${item}</li>`).join("");
     }
 
     function escapeCodeFence(text) {
@@ -586,6 +790,7 @@
       const text = sourceText.value.trim();
       const topics = selectedTopics();
       const results = renderChecks();
+      renderScreenshotHints();
       const dateText = new Date().toLocaleDateString("zh-TW", {
         year: "numeric",
         month: "2-digit",
@@ -593,7 +798,7 @@
       });
       const missing = results.filter(item => item.required && !item.ok);
       const warnings = missing.length
-        ? missing.map(item => `- ${item.label}：未偵測，建議回文墨天機確認文字包是否完整。`).join("\n")
+        ? missing.map(item => `- ${item.label}：未偵測，建議補齊文字包後再交給小科。`).join("\n")
         : "- 必要欄位目前皆已偵測。";
       const focus = focusPalaces.value.trim() || "由小科依文字包與截圖判斷，請勿自行補盤。";
       const ask = question.value.trim() || "請依本次勾選主題進行解盤，並明確標示資料不足之處。";
@@ -604,7 +809,7 @@
 - 產生日期：${dateText}
 - 任務主題：${topics.length ? topics.join("、") : "未選擇"}
 - 盤源：文墨天機文字包
-- 工具版本：科科紫微任務包產生器 v0.1
+- 工具版本：科科紫微任務包產生器 v0.1.1
 
 ## 2. 小科解盤規則
 - 文墨天機負責排盤，小科只負責依已提供資料解盤。
@@ -624,7 +829,7 @@ ${results.map(item => `- ${item.label}：${item.stateText}${item.detail ? `（${
 ${warnings}
 
 ## 6. 建議附上的截圖
-${suggestScreenshots(topics).map(item => `- ${item}`).join("\n")}
+${suggestScreenshots().map(item => `- ${item}`).join("\n")}
 
 ## 7. 本次重點宮位
 ${focus}
@@ -643,15 +848,11 @@ ${escapeCodeFence(text || "（尚未貼上文字包）")}
         : "已產生任務包；必要欄位目前皆已偵測。";
     }
 
-    function suggestScreenshots(topics) {
-      const shots = new Set(["三合日盤截圖", "原始文字包來源畫面"]);
-      if (topics.some(topic => topic.includes("流時"))) shots.add("三合時盤截圖");
-      if (topics.some(topic => topic.includes("工作") || topic.includes("事業"))) shots.add("官祿宮局部圖");
-      if (topics.some(topic => topic.includes("財務"))) shots.add("財帛宮局部圖");
-      if (topics.some(topic => topic.includes("感情") || topic.includes("婚姻"))) shots.add("夫妻宮局部圖");
-      if (topics.some(topic => topic.includes("健康"))) shots.add("疾厄宮局部圖");
-      if (topics.some(topic => topic.includes("人際") || topic.includes("合作"))) shots.add("交友宮或僕役宮局部圖");
-      shots.add("四化 / 飛星圖（若文墨天機當次畫面明確顯示）");
+    function suggestScreenshots() {
+      const shots = new Set(["三合日盤截圖", "四化 / 飛星圖（選配）"]);
+      selectedTopicInputs().forEach(item => {
+        if (item.dataset.shot) shots.add(item.dataset.shot);
+      });
       return [...shots];
     }
 
@@ -693,6 +894,7 @@ ${escapeCodeFence(text || "（尚未貼上文字包）")}
       statusText.textContent = "已清除畫面資料。";
       updateCount();
       renderChecks();
+      renderScreenshotHints();
     }
 
     function updateCount() {
@@ -703,14 +905,18 @@ ${escapeCodeFence(text || "（尚未貼上文字包）")}
       updateCount();
       renderChecks();
     });
-    document.querySelector("#topicGrid").addEventListener("change", renderChecks);
+    document.querySelector("#topicGrid").addEventListener("change", () => {
+      renderChecks();
+      renderScreenshotHints();
+    });
     buildBtn.addEventListener("click", buildPacket);
-    clearBtn.addEventListener("click", clearAll);
+    document.querySelectorAll(".clear-action").forEach(button => button.addEventListener("click", clearAll));
     copyBtn.addEventListener("click", copyOutput);
     downloadBtn.addEventListener("click", downloadOutput);
 
     updateCount();
     renderChecks();
+    renderScreenshotHints();
   </script>
 </body>
 </html>
