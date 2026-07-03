@@ -491,61 +491,71 @@ details > summary::-webkit-details-marker {
 
 .result-list {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 9px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
   margin-top: 12px;
 }
 
-.check {
-  display: grid;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
-  box-shadow: 0 6px 16px rgba(60, 125, 242, .06);
-}
-
-.check-head {
+.check-chip {
+  min-height: 36px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-}
-
-.check strong {
-  font-size: 14px;
-  line-height: 1.35;
-}
-
-.check span {
-  color: var(--muted);
+  justify-content: space-between;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 7px 8px;
+  background: #fff;
+  color: #223756;
+  box-shadow: 0 6px 16px rgba(60, 125, 242, .06);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 900;
+  min-width: 0;
 }
 
-.state {
-  flex: 0 0 auto;
-  border-radius: 999px;
-  padding: 5px 9px;
-  font-size: 12px;
-  font-weight: 950;
+.check-chip strong,
+.check-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.state.ok {
+.check-chip span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 950;
+}
+
+.check-chip.ok {
+  border-color: rgba(24, 169, 120, .28);
+  background: linear-gradient(180deg, #fff 0%, var(--green-soft) 100%);
+}
+
+.check-chip.ok span {
   color: #0f7e58;
-  background: var(--green-soft);
+  background: #dff4ec;
 }
 
-.state.warn {
+.check-chip.warn {
+  border-color: rgba(242, 163, 58, .34);
+  background: linear-gradient(180deg, #fff 0%, var(--orange-soft) 100%);
+}
+
+.check-chip.warn span {
   color: #a66a12;
-  background: var(--orange-soft);
+  background: #ffe9c2;
 }
 
-.state.miss {
+.check-chip.miss {
+  border-color: rgba(216, 106, 97, .28);
+  background: linear-gradient(180deg, #fff 0%, var(--red-soft) 100%);
+}
+
+.check-chip.miss span {
   color: #b94e45;
-  background: var(--red-soft);
+  background: #f9dddd;
 }
 
 .notice {
@@ -616,7 +626,8 @@ details > summary::-webkit-details-marker {
 
 @media (max-width: 350px) {
   .topic-grid,
-  .scope {
+  .scope,
+  .result-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

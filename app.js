@@ -54,34 +54,39 @@
         {
           id: "appVersion",
           label: "App版本",
+          shortLabel: "App",
           help: "建議保留文墨天機版本，方便小科知道資料來源。",
           test: data => /(App\s*版本|APP\s*版本|版本)\s*[:：]?\s*[0-9][0-9A-Za-z._-]*/i.test(data.ziweiText)
         },
         {
           id: "starCode",
           label: "安星碼",
+          shortLabel: "安星",
           help: "用來標記這份命盤文字包來源。",
           test: data => /安星碼\s*[:：]?\s*[A-Za-z0-9]{3,}/i.test(data.ziweiText)
         },
         {
           id: "basicInfo",
           label: "基本信息",
+          shortLabel: "基本",
           help: "姓名、性別、出生時間、陰陽曆等基本資料。",
           test: data => /(基本信息|基本資料|姓名|性別|出生|陽曆|陰曆|農曆|命主|身主)/.test(data.ziweiText)
         },
         {
           id: "palaces",
           label: "命盤十二宮",
+          shortLabel: "十二宮",
           help: "至少偵測到 10 個常見宮位名稱。",
           test: data => uniqueMatches(data.ziweiText, palaceNames).length >= 10,
           detail: data => `${uniqueMatches(data.ziweiText, palaceNames).length} / 12+`
         },
-        { id: "year", label: "流年", help: "今日與指定年份任務通常需要。", test: data => /流年/.test(data.ziweiText) },
-        { id: "month", label: "流月", help: "今日與近期狀態任務建議包含。", test: data => /流月/.test(data.ziweiText) },
-        { id: "day", label: "流日", help: "今日任務建議包含。", test: data => /流日/.test(data.ziweiText) },
+        { id: "year", label: "流年", shortLabel: "流年", help: "今日與指定年份任務通常需要。", test: data => /流年/.test(data.ziweiText) },
+        { id: "month", label: "流月", shortLabel: "流月", help: "今日與近期狀態任務建議包含。", test: data => /流月/.test(data.ziweiText) },
+        { id: "day", label: "流日", shortLabel: "流日", help: "今日任務建議包含。", test: data => /流日/.test(data.ziweiText) },
         {
           id: "hour",
           label: "流時 / 時曜",
+          shortLabel: "流時",
           help: "勾選流時時建議確認。",
           test: data => /(流時|時曜)/.test(data.ziweiText),
           requiredWhen: data => data.topics.includes("此時此刻流時")
@@ -121,15 +126,15 @@
       defaultTopic: "今日能量",
       defaultShots: ["固定八字 TXT", "分析日期", "科科本次問題"],
       checks: [
-        { id: "basic", label: "基本資料", help: "八字固定 TXT 內的基本資料段落。", test: data => /(基本資料|基本信息|姓名|性別|出生|生辰)/.test(data.baziText) },
-        { id: "pillars", label: "四柱", help: "年柱、月柱、日柱、時柱或四柱段落。", test: data => /(四柱|年柱|月柱|日柱|時柱)/.test(data.baziText) },
-        { id: "dayMaster", label: "日主", help: "日主資訊留給小科對照十神。", test: data => /日主/.test(data.baziText) },
-        { id: "useful", label: "喜用", help: "喜用或用神資訊。", test: data => /(喜用|用神|喜神)/.test(data.baziText) },
-        { id: "avoid", label: "忌神", help: "忌神或需保守處。", test: data => /忌神/.test(data.baziText) },
-        { id: "tenGods", label: "十神對照", help: "十神對照表或十神段落。", test: data => /(十神對照|十神|比肩|劫財|食神|傷官|正財|偏財|正官|七殺|偏印|正印)/.test(data.baziText) },
-        { id: "wealth", label: "財星定義", help: "財星、正財或偏財定義。", test: data => /(財星|正財|偏財)/.test(data.baziText) },
-        { id: "date", label: "分析日期", help: "要交給小科推算的日期。", test: data => Boolean(data.analysisDate) },
-        { id: "question", label: "科科本次問題", help: "本次要問小科的內容。", test: data => Boolean(data.question.trim()) }
+        { id: "basic", label: "基本資料", shortLabel: "基本", help: "八字固定 TXT 內的基本資料段落。", test: data => /(基本資料|基本信息|姓名|性別|出生|生辰)/.test(data.baziText) },
+        { id: "pillars", label: "四柱", shortLabel: "四柱", help: "年柱、月柱、日柱、時柱或四柱段落。", test: data => /(四柱|年柱|月柱|日柱|時柱)/.test(data.baziText) },
+        { id: "dayMaster", label: "日主", shortLabel: "日主", help: "日主資訊留給小科對照十神。", test: data => /日主/.test(data.baziText) },
+        { id: "useful", label: "喜用", shortLabel: "喜用", help: "喜用或用神資訊。", test: data => /(喜用|用神|喜神)/.test(data.baziText) },
+        { id: "avoid", label: "忌神", shortLabel: "忌神", help: "忌神或需保守處。", test: data => /忌神/.test(data.baziText) },
+        { id: "tenGods", label: "十神對照", shortLabel: "十神", help: "十神對照表或十神段落。", test: data => /(十神對照|十神|比肩|劫財|食神|傷官|正財|偏財|正官|七殺|偏印|正印)/.test(data.baziText) },
+        { id: "wealth", label: "財星定義", shortLabel: "財星", help: "財星、正財或偏財定義。", test: data => /(財星|正財|偏財)/.test(data.baziText) },
+        { id: "date", label: "分析日期", shortLabel: "日期", help: "要交給小科推算的日期。", test: data => Boolean(data.analysisDate) },
+        { id: "question", label: "科科本次問題", shortLabel: "問題", help: "本次要問小科的內容。", test: data => Boolean(data.question.trim()) }
       ],
       buildPacket: buildBaziPacket
     },
@@ -167,11 +172,11 @@
       defaultTopic: "財務",
       defaultShots: ["八字候選日或八字摘要", "紫微流日資料", "必要時附流日盤截圖"],
       checks: [
-        { id: "bazi", label: "八字資料或候選日", help: "八字候選日、八字摘要或固定八字資料。", test: data => data.baziCompareText.trim().length >= 8 },
-        { id: "ziwei", label: "紫微流日資料", help: "該日文墨天機紫微流日資料。", test: data => /(流日|紫微|文墨|命宮|財帛|官祿|疾厄)/.test(data.ziweiCompareText) },
-        { id: "date", label: "分析日期", help: "兩邊資料要對照的日期。", test: data => Boolean(data.analysisDate) },
-        { id: "target", label: "對照目標", help: "至少選一個對照方向。", test: data => data.topics.length > 0 },
-        { id: "question", label: "科科本次問題", help: "本次要問小科的內容。", test: data => Boolean(data.question.trim()) }
+        { id: "bazi", label: "八字資料或候選日", shortLabel: "八字", help: "八字候選日、八字摘要或固定八字資料。", test: data => data.baziCompareText.trim().length >= 8 },
+        { id: "ziwei", label: "紫微流日資料", shortLabel: "紫微", help: "該日文墨天機紫微流日資料。", test: data => /(流日|紫微|文墨|命宮|財帛|官祿|疾厄)/.test(data.ziweiCompareText) },
+        { id: "date", label: "分析日期", shortLabel: "日期", help: "兩邊資料要對照的日期。", test: data => Boolean(data.analysisDate) },
+        { id: "target", label: "對照目標", shortLabel: "目標", help: "至少選一個對照方向。", test: data => data.topics.length > 0 },
+        { id: "question", label: "科科本次問題", shortLabel: "問題", help: "本次要問小科的內容。", test: data => Boolean(data.question.trim()) }
       ],
       buildPacket: buildComparePacket
     }
@@ -221,6 +226,7 @@
       return {
         id: check.id,
         label: check.label,
+        shortLabel: check.shortLabel || check.label,
         help: check.help,
         ok,
         required,
@@ -551,14 +557,17 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
     const okCount = results.filter(item => item.ok).length;
     els.checkSummary.textContent = `資料檢查：已偵測 ${okCount}/${results.length} 項`;
     els.checkResults.innerHTML = results.map(item => `
-      <div class="check">
-        <div class="check-head">
-          <strong>${item.label}${item.detail ? `：${item.detail}` : ""}</strong>
-          <div class="state ${item.state}">${item.stateText}</div>
-        </div>
-        <span>${item.help}</span>
+      <div class="check-chip ${item.state}" title="${item.label}：${item.stateText}" aria-label="${item.label}：${item.stateText}">
+        <strong>${item.shortLabel}</strong>
+        <span>${shortStateText(item.state)}</span>
       </div>
     `).join("");
+  }
+
+  function shortStateText(state) {
+    if (state === "ok") return "已";
+    if (state === "miss") return "未";
+    return "補";
   }
 
   function renderShotHints(shots) {
