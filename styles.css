@@ -378,6 +378,31 @@ textarea {
   margin-top: 10px;
 }
 
+.file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.file-picker {
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #acd0ff;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--blue-deep);
+  font-size: 14px;
+  font-weight: 950;
+  box-shadow: 0 8px 18px rgba(60, 125, 242, .1);
+}
+
+.file-input:focus + .file-picker {
+  outline: 3px solid rgba(60, 125, 242, .18);
+}
+
 .topic-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

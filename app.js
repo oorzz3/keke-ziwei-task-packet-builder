@@ -1,5 +1,5 @@
 (function () {
-  const VERSION = "科科命理任務包產生器 v0.2-alpha.1";
+  const VERSION = "科科命理任務包產生器 v0.2-alpha.2";
   const ALLOWED_STATES = {
     ok: "已偵測",
     miss: "未偵測",
@@ -111,7 +111,8 @@
           placeholder: "請貼上科科固定八字 TXT。也可匯入本機 TXT 檔案，不會上傳、不會儲存。",
           large: true,
           counter: true,
-          file: true
+          file: true,
+          fileLabel: "匯入本機 TXT / MD"
         }
       ],
       topics: [
@@ -153,7 +154,9 @@
           id: "baziCompareText",
           label: "八字候選日 / 八字分析摘要",
           placeholder: "可貼上八字候選日、八字任務包摘要，或固定八字資料 + 問題。",
-          counter: true
+          counter: true,
+          file: true,
+          fileLabel: "匯入八字 TXT / MD"
         },
         {
           id: "ziweiCompareText",
@@ -450,7 +453,7 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
     els.modeEyebrow.textContent = mode.eyebrow;
     els.modeTitle.textContent = mode.title;
     els.modeDescription.textContent = mode.description;
-    els.modeStep.textContent = "v0.2-alpha.1";
+    els.modeStep.textContent = "v0.2-alpha.2";
     els.buildBtn.textContent = mode.buildLabel;
     els.topicHelp.textContent = mode.topicHelp;
 
@@ -474,8 +477,9 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
   function renderTextField(field) {
     const fileControl = field.file
       ? `<div class="file-row">
-          <input id="${field.id}File" type="file" accept=".txt,text/plain">
-          <p class="field-help">匯入本機 TXT（不會上傳、不會儲存）</p>
+          <input class="file-input" id="${field.id}File" type="file" accept=".txt,.md,text/plain,text/markdown">
+          <label class="file-picker" for="${field.id}File">${field.fileLabel || "匯入本機 TXT / MD"}</label>
+          <p class="field-help">使用 FileReader 讀取本機檔案，不會上傳、不會儲存。</p>
         </div>`
       : "";
     return `
