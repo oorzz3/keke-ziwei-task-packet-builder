@@ -1,5 +1,5 @@
 (function () {
-  const VERSION = "科科命理任務包產生器 v0.3-alpha";
+  const VERSION = "科科命理任務包產生器 v0.3-alpha.1";
   const ALLOWED_STATES = {
     ok: "已偵測",
     miss: "未偵測",
@@ -343,6 +343,8 @@
     return `## 小科老師模式
 - 本次解盤角色：${teacher.title}
 - 角色定位：${teacher.tagline}；${teacher.description}
+- 本次角色提示：
+  - ${teacher.promptBlock}
 - 回覆風格：
 ${markdownList(teacher.style)}
 - 分析重點：
@@ -592,7 +594,7 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
     els.modeEyebrow.textContent = mode.eyebrow;
     els.modeTitle.textContent = mode.title;
     els.modeDescription.textContent = mode.description;
-    els.modeStep.textContent = "v0.3-alpha";
+    els.modeStep.textContent = "v0.3-alpha.1";
     els.buildBtn.textContent = mode.buildLabel;
     els.topicHelp.textContent = mode.topicHelp;
 
