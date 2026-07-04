@@ -40,13 +40,15 @@ const cases = [
       modeId: "ziwei",
       topics: ["今日總覽", "此時此刻流時"],
       topicLabels: ["今日", "流時"],
+      teacherId: "daily",
       question: "請用假資料測試紫微任務包。",
       outputType: "md",
       analysisDate: "",
       ziweiText: fakeZiwei,
       focusPalaces: "官祿宮、命宮"
     },
-    expected: "# 科科紫微解盤任務包"
+    expected: "# 科科紫微解盤任務包",
+    expectedTeacher: "日常貼心小科"
   },
   {
     mode: "bazi",
@@ -54,12 +56,14 @@ const cases = [
       modeId: "bazi",
       topics: ["今日能量配比", "財務 / 資源"],
       topicLabels: ["今日能量", "財務"],
+      teacherId: "technical",
       question: "請用假資料測試八字任務包。",
       outputType: "md",
       analysisDate: "2026-07-03",
       baziText: fakeBazi
     },
-    expected: "# 科科八字任務包"
+    expected: "# 科科八字任務包",
+    expectedTeacher: "命理技術派小科"
   },
   {
     mode: "compare",
@@ -67,13 +71,15 @@ const cases = [
       modeId: "compare",
       topics: ["財務 / 資源", "工作 / 任務"],
       topicLabels: ["財務", "工作"],
+      teacherId: "risk",
       question: "請用假資料測試合併對照包。",
       outputType: "md",
       analysisDate: "2026-07-03",
       baziCompareText: fakeBazi,
       ziweiCompareText: fakeZiwei
     },
-    expected: "# 科科命理任務包｜合併對照包"
+    expected: "# 科科命理任務包｜合併對照包",
+    expectedTeacher: "嚴格風控小科"
   }
 ];
 
@@ -86,8 +92,11 @@ for (const item of cases) {
   if (!packet.includes(item.expected)) {
     throw new Error(`${item.mode}: missing expected heading`);
   }
-  if (!packet.includes("v0.2-alpha")) {
+  if (!packet.includes("v0.3-alpha")) {
     throw new Error(`${item.mode}: missing version`);
+  }
+  if (!packet.includes("## 小科老師模式") || !packet.includes(item.expectedTeacher)) {
+    throw new Error(`${item.mode}: missing teacher mode output`);
   }
 }
 

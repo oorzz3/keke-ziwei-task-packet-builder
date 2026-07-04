@@ -11,10 +11,14 @@ vm.runInContext(app, context);
 
 const builder = context.window.KekePacketBuilder;
 if (!builder) throw new Error("KekePacketBuilder was not exposed");
+if (!builder.TEACHER_MODES || Object.keys(builder.TEACHER_MODES).length !== 7) {
+  throw new Error("Teacher modes regression: expected 7 teacher modes");
+}
 
 const requiredIds = [
   "modeGrid",
   "topicGrid",
+  "teacherContainer",
   "question",
   "outputType",
   "buildBtn",
@@ -33,6 +37,7 @@ const ziweiData = {
   modeId: "ziwei",
   topics: ["今日總覽", "此時此刻流時"],
   topicLabels: ["今日", "流時"],
+  teacherId: "daily",
   question: "紫微回歸測試。",
   outputType: "md",
   analysisDate: "",
@@ -60,6 +65,7 @@ const requiredSections = [
   "# 科科紫微解盤任務包",
   "## 1. 任務類型",
   "## 2. 小科解盤規則",
+  "## 小科老師模式",
   "## 3. 科科本次問題",
   "## 4. 資料檢查",
   "## 5. 需補齊或確認",
@@ -72,6 +78,10 @@ for (const section of requiredSections) {
   if (!packet.includes(section)) {
     throw new Error(`Ziwei regression: missing ${section}`);
   }
+}
+
+if (!packet.includes("日常貼心小科")) {
+  throw new Error("Ziwei regression: missing default teacher mode");
 }
 
 console.log("regression-check OK");

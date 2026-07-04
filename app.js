@@ -1,9 +1,116 @@
 (function () {
-  const VERSION = "科科命理任務包產生器 v0.2-alpha.2";
+  const VERSION = "科科命理任務包產生器 v0.3-alpha";
   const ALLOWED_STATES = {
     ok: "已偵測",
     miss: "未偵測",
     warn: "建議補齊"
+  };
+
+  const TEACHER_COMMON_BOUNDARIES = [
+    "命理只作為生活觀察與決策輔助，不作絕對預言。",
+    "不得輸出保證吉凶。",
+    "不得提供醫療診斷。",
+    "不得提供投資買賣指令。",
+    "不得恐嚇使用者。",
+    "若資料不足，必須標示資料不足。",
+    "若八字、紫微、黃曆互相衝突，必須標示衝突，不得硬凹。",
+    "百分比只代表注意力 / 作息配置比重，不代表事件發生機率。",
+    "若涉及健康、疾病、疼痛、用藥、復健，現實醫師評估優先於命理。",
+    "若涉及金錢、投資、消費，現實風險與資金狀況優先於命理。"
+  ];
+
+  const TEACHER_MODES = {
+    daily: {
+      id: "daily",
+      title: "日常貼心小科",
+      shortLabel: "日常",
+      tagline: "陪科科過一天",
+      description: "溫柔白話、今日提醒",
+      bestFor: ["今日運勢", "今日摘要", "今天適合做什麼", "今天要注意什麼", "日常行程安排", "心情整理"],
+      style: ["溫柔", "白話", "不恐嚇", "不玄學堆砌", "把命理翻成科科能實際使用的生活提醒"],
+      focus: ["今日主氣", "今日副氣", "精神狀態", "身體修復", "財務注意", "人際互動", "今日適合安排", "今日不適合安排"],
+      outputFormat: ["今日一句話", "今日能量配比", "主偏向", "副偏向", "適合做", "不適合做", "小提醒", "浪漫提醒"],
+      boundaries: ["不可誇大吉凶，不可把提醒講成必然事件。"],
+      promptBlock: "請用日常貼心小科的語氣，把資料整理成科科今天能用的提醒。"
+    },
+    risk: {
+      id: "risk",
+      title: "嚴格風控小科",
+      shortLabel: "風控",
+      tagline: "幫科科踩煞車",
+      description: "先看風險，再看可行",
+      bestFor: ["身體不穩或外出", "出行安排", "花費決策", "工作衝突", "高消耗行程", "想做但怕硬撐"],
+      style: ["直接", "不安慰優先", "先扣分再看條件", "必要時建議取消或延後"],
+      focus: ["最大風險", "可承受條件", "停損線", "現實條件優先於命理", "八字 / 紫微警訊", "資料不足處"],
+      outputFormat: ["先講結論", "最大風險", "命理加分", "命理扣分", "現實條件扣分", "可以做的條件", "必須取消 / 暫停條件", "小科裁判"],
+      boundaries: ["健康狀況以醫師與身體反應優先。", "不可因命理偏吉就鼓勵過度消耗。"],
+      promptBlock: "請用嚴格風控小科的角度，先找風險，再給可行條件與停損線。"
+    },
+    technical: {
+      id: "technical",
+      title: "命理技術派小科",
+      shortLabel: "技術",
+      tagline: "拆盤給科科看",
+      description: "八字紫微逐項說明",
+      bestFor: ["想知道為什麼", "交叉驗證", "流年 / 流月 / 流日", "十神與宮位", "學習命理邏輯"],
+      style: ["結構化", "可使用術語", "術語必須翻成白話", "分來源說明訊號"],
+      focus: ["八字：日主、流年、流月、流日、十神、五行、喜忌、合沖刑害", "紫微：流年 / 月 / 日落宮、被點亮宮位、四化、大限與流年疊象、財帛、疾厄、遷移、福德、官祿", "黃曆：流日干支、節氣、沖煞、值神、建除十二神", "一致點", "衝突點"],
+      outputFormat: ["技術總結", "八字訊號", "紫微信號", "黃曆輔助", "一致點", "衝突點", "解讀信心", "白話結論"],
+      boundaries: ["資料不足或流派差異時必須標示，不得假裝唯一正解。"],
+      promptBlock: "請用命理技術派小科的方式，逐項拆解訊號來源，再給白話結論。"
+    },
+    decision: {
+      id: "decision",
+      title: "決策軍師小科",
+      shortLabel: "軍師",
+      tagline: "幫科科二選一",
+      description: "結論、評分、條件、停損",
+      bestFor: ["A / B 選擇", "去不去", "買不買", "今天做不做", "先休息或施工", "行程比較"],
+      style: ["結論先行", "可評分", "條件明確", "文字精簡"],
+      focus: ["選項 A / B 加分扣分", "命理支持", "現實支持", "最佳情境", "最壞情境", "停損線"],
+      outputFormat: ["直接結論", "選項評分", "命理支持", "現實支持", "風險比較", "建議方案", "備用方案", "停損線", "小科裁判一句話"],
+      boundaries: ["命理分數不可當成事件機率。", "不可鼓勵不可逆的高風險決策。"],
+      promptBlock: "請用決策軍師小科的方式，幫科科把選項拆清楚並給出可執行建議。"
+    },
+    healing: {
+      id: "healing",
+      title: "療癒浪漫小科",
+      shortLabel: "療癒",
+      tagline: "幫科科補心",
+      description: "安定、祝福、心情整理",
+      bestFor: ["心情亂", "佛光山", "考試祝福", "日常祝福", "低潮", "需要被安定"],
+      style: ["溫柔", "有畫面感", "浪漫但務實", "不空泛灌雞湯"],
+      focus: ["心要放在哪裡", "今天可以放下什麼", "要保護哪一部分", "祝福", "詩意提醒"],
+      outputFormat: ["今日心象", "今日適合", "今日不必勉強", "命理溫柔提醒", "科科可以做的小儀式", "浪漫提醒", "小科祝福"],
+      boundaries: ["不可掩蓋重大風險。", "若涉及健康或安全，必須提醒停止硬撐並以現實評估優先。"],
+      promptBlock: "請用療癒浪漫小科的語氣，給科科安定、具體、能落地的提醒。"
+    },
+    audit: {
+      id: "audit",
+      title: "反證審查小科",
+      shortLabel: "審查",
+      tagline: "防止科科硬凹",
+      description: "挑矛盾、抓資料不足",
+      bestFor: ["想做但怕硬湊吉象", "八字與紫微不一致", "資料不足", "需要被反駁", "想做決策審查"],
+      style: ["冷靜", "批判", "不討好", "不恐嚇"],
+      focus: ["資料是否足夠", "支持訊號", "反對訊號", "想像成分", "命理不能判斷的現實問題", "需補醫師或現實評估", "保守讀法"],
+      outputFormat: ["審查結論", "目前可支持的判斷", "目前不能支持的判斷", "八字與紫微衝突點", "資料不足", "可能硬凹之處", "最保守建議", "需要補充的資料"],
+      boundaries: ["資料不足時不可戲劇化斷語。", "不可把模糊訊號講成神秘預言。"],
+      promptBlock: "請用反證審查小科的角度，優先找矛盾、資料缺口與可能硬凹處。"
+    },
+    verdict: {
+      id: "verdict",
+      title: "鐵口直斷小科",
+      shortLabel: "直斷",
+      tagline: "早上開盤定吉凶",
+      description: "先斷吉凶，再講依據",
+      bestFor: ["早上快速總判", "重大決策前總覽", "交叉驗證後需要明確結論", "想要刺激但有邊界的判斷"],
+      style: ["先斷後解", "清楚明快", "可以使用吉凶傾向", "不宣稱必然", "不恐嚇"],
+      focus: ["財運 / 資源", "健康 / 修復", "親人 / 家庭", "事業 / 工作", "學習 / 技能", "人際 / 合作", "感情 / 桃花", "心理 / 情緒", "出行 / 安全", "口舌 / 衝突", "隱藏提醒", "今日最該做"],
+      outputFormat: ["鐵口總斷：小吉 / 中吉 / 吉中藏凶 / 凶中有救 / 小凶 / 大凶不宜", "一句斷語", "今日十二項", "八字依據", "紫微依據", "八字 × 紫微衝突驗證", "趨吉避凶", "小科鐵口一句"],
+      boundaries: ["不可輸出絕對會發生的預言。", "不可提供醫療診斷或投資買賣指令。", "不可使用恐嚇式死亡、災難、分手、背叛斷語。", "若訊號衝突，必須列反證與停損線。"],
+      promptBlock: "請用鐵口直斷小科的方式，先給吉凶傾向，再說依據、反證與停損。"
+    }
   };
 
   const palaceNames = ["命宮", "兄弟宮", "夫妻宮", "子女宮", "財帛宮", "疾厄宮", "遷移宮", "交友宮", "僕役宮", "官祿宮", "事業宮", "田宅宮", "福德宮", "父母宮"];
@@ -206,6 +313,7 @@
       modeId,
       topics: selectedTopicInputs(root).map(item => item.dataset.output || item.value),
       topicLabels: selectedTopicInputs(root).map(item => item.value),
+      teacherId: root.querySelector("#teacherGrid input:checked") ? root.querySelector("#teacherGrid input:checked").value : "daily",
       question: root.querySelector("#question") ? root.querySelector("#question").value : "",
       outputType: root.querySelector("#outputType") ? root.querySelector("#outputType").value : "md",
       analysisDate: root.querySelector("#analysisDate") ? root.querySelector("#analysisDate").value : ""
@@ -219,6 +327,31 @@
     });
 
     return data;
+  }
+
+  function selectedTeacher(data) {
+    return TEACHER_MODES[data.teacherId] || TEACHER_MODES.daily;
+  }
+
+  function markdownList(items) {
+    return items.map(item => `  - ${item}`).join("\n");
+  }
+
+  function teacherSection(data) {
+    const teacher = selectedTeacher(data);
+    const boundaries = [...teacher.boundaries, ...TEACHER_COMMON_BOUNDARIES];
+    return `## 小科老師模式
+- 本次解盤角色：${teacher.title}
+- 角色定位：${teacher.tagline}；${teacher.description}
+- 回覆風格：
+${markdownList(teacher.style)}
+- 分析重點：
+${markdownList(teacher.focus)}
+- 必守邊界：
+${markdownList(boundaries)}
+- 建議輸出格式：
+${markdownList(teacher.outputFormat)}
+`;
   }
 
   function analyzeMode(modeId, data) {
@@ -288,6 +421,8 @@
 - 不得提供投資買賣指令、醫療診斷或其他高風險決策指令。
 - 若資料不足，請先列出不足處，再保守解讀。
 
+${teacherSection(data)}
+
 ## 3. 科科本次問題
 ${ask}
 
@@ -329,6 +464,8 @@ ${escapeCodeFence(text || "（尚未貼上文字包）")}
 - 若日柱推算不確定，請明確說明，不得硬下結論。
 - 百分比為注意力 / 作息配置比重，不是事件發生機率。
 - 不得提供投資買賣指令、醫療診斷或絕對預言。
+
+${teacherSection(data)}
 
 ## 3. 科科本次問題
 ${ask}
@@ -374,6 +511,8 @@ ${escapeCodeFence(data.baziText.trim() || "（尚未貼上八字 TXT）")}
 - 若資料不足，請明確標示。
 - 百分比為注意力 / 作息配置比重，不是事件發生機率。
 - 不得輸出投資買賣指令、醫療診斷或絕對預言。
+
+${teacherSection(data)}
 
 ## 3. 八字區
 \`\`\`text
@@ -453,13 +592,14 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
     els.modeEyebrow.textContent = mode.eyebrow;
     els.modeTitle.textContent = mode.title;
     els.modeDescription.textContent = mode.description;
-    els.modeStep.textContent = "v0.2-alpha.2";
+    els.modeStep.textContent = "v0.3-alpha";
     els.buildBtn.textContent = mode.buildLabel;
     els.topicHelp.textContent = mode.topicHelp;
 
     els.fieldsContainer.innerHTML = mode.fields.map(renderTextField).join("");
     els.dateContainer.innerHTML = mode.dateLabel ? renderDateField(mode.dateLabel) : "";
     els.extraFieldsContainer.innerHTML = (mode.extraFields || []).map(renderShortField).join("");
+    els.teacherContainer.innerHTML = renderTeacherModes();
     els.topicGrid.innerHTML = mode.topics.map(topic => renderTopic(topic, mode.defaultTopic)).join("");
     els.question.value = "";
     els.output.value = "";
@@ -507,6 +647,32 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
     `;
   }
 
+  function renderTeacherModes() {
+    return `
+      <div class="section-title teacher-title">
+        <h2>本次請哪一種小科老師解盤？</h2>
+        <span class="step">TEACHER</span>
+      </div>
+      <div class="teacher-grid" id="teacherGrid">
+        ${Object.values(TEACHER_MODES).map(renderTeacherCard).join("")}
+      </div>
+    `;
+  }
+
+  function renderTeacherCard(teacher) {
+    const checked = teacher.id === "daily" ? "checked" : "";
+    return `
+      <label class="teacher-card">
+        <input type="radio" name="teacherMode" value="${teacher.id}" ${checked}>
+        <span class="teacher-copy">
+          <strong>${teacher.title}</strong>
+          <small>${teacher.tagline}</small>
+          <span>${teacher.description}</span>
+        </span>
+      </label>
+    `;
+  }
+
   function renderTopic(topic, defaultTopic) {
     const [icon, label, output, shot, flag] = topic;
     const checked = label === defaultTopic ? "checked" : "";
@@ -538,6 +704,8 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
       item.addEventListener("change", updateAll);
     });
     els.topicGrid.querySelectorAll("input").forEach(item => item.addEventListener("change", updateAll));
+    const teacherGrid = document.querySelector("#teacherGrid");
+    if (teacherGrid) teacherGrid.querySelectorAll("input").forEach(item => item.addEventListener("change", updateAll));
   }
 
   function updateCounts() {
@@ -646,6 +814,7 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
       topicGrid: document.querySelector("#topicGrid"),
       topicHelp: document.querySelector("#topicHelp"),
       extraFieldsContainer: document.querySelector("#extraFieldsContainer"),
+      teacherContainer: document.querySelector("#teacherContainer"),
       question: document.querySelector("#question"),
       outputType: document.querySelector("#outputType"),
       checkSummary: document.querySelector("#checkSummary"),
@@ -672,6 +841,7 @@ ${results.map(item => `- ${item.label}：${item.stateText}`).join("\n")}
     window.KekePacketBuilder = {
       VERSION,
       MODES,
+      TEACHER_MODES,
       analyzeMode,
       createPacket,
       collectDataForTest: collectData
